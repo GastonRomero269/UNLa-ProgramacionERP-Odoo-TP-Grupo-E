@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Category -->
+    <record id="module_category_estate" model="ir.module.category">
+        <field name="name">Inmobiliaria</field>
+        <field name="visible" eval="True"/>
+    </record>
+    <record id="module_category_estate_management" model="ir.module.category">
+        <field name="name">Inmobiliaria</field>
+        <field name="parent_id" ref="module_category_estate"/>
+        <field name="visible" eval="True"/>
+    </record>
+
+    <!-- Groups -->
+    <record id="group_property_manager" model="res.groups">
+        <field name="name">Manager de Propiedades</field>
+        <field name="category_id" ref="module_category_estate_management"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="group_property_seller" model="res.groups">
+        <field name="name">Vendedor de Propiedades</field>
+        <field name="category_id" ref="module_category_estate_management"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Access rules -->
+    <record id="access_estate_property_manager" model="ir.model.access">
+        <field name="name">estate.property manager</field>
+        <field name="model_id" ref="model_estate_property"/>
+        <field name="group_id" ref="real_estate.group_property_manager"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="access_estate_property_seller" model="ir.model.access">
+        <field name="name">estate.property seller</field>
+        <field name="model_id" ref="model_estate_property"/>
+        <field name="group_id" ref="real_estate.group_property_seller"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>
