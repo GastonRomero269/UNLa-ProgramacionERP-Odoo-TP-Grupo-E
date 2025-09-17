@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_estate_property_manager,access.estate.property.manager,real_estate.model_estate_property,real_estate.group_property_manager,1,1,1,1
+access_estate_property_seller,access.estate.property.seller,real_estate.model_estate_property,real_estate.group_property_seller,1,0,0,0
+access_estate_property_type_manager,access.estate.property.type.manager,real_estate.model_estate_property_type,real_estate.group_property_manager,1,1,1,1
+access_estate_property_type_seller,access.estate.property.type.seller,real_estate.model_estate_property_type,real_estate.group_property_seller,1,0,0,0
+access_estate_property_tag_manager,access.estate.property.tag.manager,real_estate.model_estate_property_tag,real_estate.group_property_manager,1,1,1,1
+access_estate_property_tag_seller,access.estate.property.tag.seller,real_estate.model_estate_property_tag,real_estate.group_property_seller,1,0,0,0
+access_estate_property_offer_manager,access.estate.property.offer.manager,real_estate.model_estate_property_offer,real_estate.group_property_manager,1,1,1,1
+access_estate_property_offer_seller,access.estate.property.offer.seller,real_estate.model_estate_property_offer,real_estate.group_property_seller,1,0,0,0
