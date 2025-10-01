@@ -10,6 +10,7 @@
         <menuitem id="menu_estate_settings" name="Ajustes" groups="real_estate.group_property_manager,real_estate.group_property_seller">
             <menuitem id="menu_estate_property_type_action" name="Tipos de propiedad" action="estate_property_type_action"/>
             <menuitem id="menu_estate_property_tag_action" name="Etiquetas de propiedad" action="estate_property_tag_action"/>
+            <menuitem id="menu_estate_property_offer_action" name="Ofertas de propiedad" action="estate_property_offer_action"/>
         </menuitem>
 
     </menuitem>

@@ -50,13 +50,17 @@
         <field name="arch" type="xml">
             <form string="Propiedad">
                 <header>
-                    <field name="state" widget="statusbar" options="{'clickable': '1', 'statusbar_visible': 'draft,cancel,done'}" />
+                    <button name="action_cancel" string="Cancelar" type="object" class="oe_highlight" invisible="state not in ('new', 'offer_received', 'offer_accepted')"/>
+                    <button name="action_sold" string="Marcar como vendida" type="object" class="oe_highlight" invisible="state != 'offer_accepted'"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <h1>
                         <field name="name" placeholder="Nombre propiedad"/>
                     </h1>
-                    
+                    <group>
+                        <field name="tag_ids" widget="many2many_tags"/>
+                    </group>
                     <group>
                         <group>
                             <field name="property_type_id" string="Tipo Propiedad"/>
@@ -66,6 +70,7 @@
                         <group>
                             <field name="expected_price" string="Precio esperado"/>
                             <field name="selling_price" string="Precio de venta"/>
+                            <field name="best_offer" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -73,15 +78,22 @@
                             <group>
                                 <field name="description" string="Descripción"/>
                                 <field name="bedrooms" string="Habitaciones"/>
-                                <field name="living_area" string="Superficie cubierta"/>
                                 <field name="facades" string="Fachadas"/>
                                 <field name="garage" string="Garage"/>
+                                <field name="living_area" string="Superficie cubierta"/>
                             </group>
                         </page>
-                        <page string="Jardín">
+                        <page string="Areas">
+                            <group>
+                                <field name="garden_area" string="Superficie del jardín"/>
+                                <field name="living_area" string="Superficie cubierta"/>
+                                <field name="total_area" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Gardín">
                             <group>
                                 <field name="garden" string="Jardín"/>
-                                <field name="garden_area" string="Superficie jardín"/>
+                                <field name="garden_area" string="Superficie del jardín"/>
                                 <field name="garden_orientation" string="Orientación del jardín"/>
                             </group>
                         </page>
@@ -93,13 +105,6 @@
                         </page>
                         <page string="Ofertas">
                             <field name="offer_ids" domain="[]"/>
-                        </page>
-                        <page string="Etiquetas">
-                            <field name="tag_ids" domain="[]">
-                                <list editable="top">
-                                    <field name="name" string="Nombre"/>
-                                </list>
-                            </field>
                         </page>
                     </notebook>
                 </sheet>
