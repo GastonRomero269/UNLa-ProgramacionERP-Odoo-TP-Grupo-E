@@ -1,4 +1,5 @@
 <odoo>
+    <!-- Formulario de vista de ofertas de propiedades -->
     <record id="estate_property_offer_view_list" model="ir.ui.view">
         <field name="name">estate.property.offer.view.list</field>
         <field name="model">estate.property.offer</field>
@@ -14,6 +15,7 @@
         </field>
     </record>
 
+    <!-- Formulario de creacion de ofertas de propiedades -->
     <record id="estate_property_offer_view_form" model="ir.ui.view">
         <field name="name">estate.property.offer.view.form</field>
         <field name="model">estate.property.offer</field>
@@ -36,6 +38,7 @@
         </field>
     </record>
 
+    <!-- Formulario de busqueda de ofertas de propiedades -->
     <record id="estate_property_offer_view_search" model="ir.ui.view">
         <field name="name">estate.property.offer.view.search</field>
         <field name="model">estate.property.offer</field>
@@ -54,6 +57,7 @@
         </field>
     </record>
 
+    <!-- Formulario de accion de ofertas de propiedades -->
     <record id="estate_property_offer_action" model="ir.actions.act_window">
         <field name="name">Ofertas</field>
         <field name="res_model">estate.property.offer</field>

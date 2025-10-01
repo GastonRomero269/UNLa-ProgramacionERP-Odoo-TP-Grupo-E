@@ -7,6 +7,11 @@ class EstatePropertyOffer(models.Model):
     _description = 'Oferta sobre propiedad'
 
     price = fields.Float(string="Precio", required=True)
+    partner_id = fields.Many2one(comodel_name='res.partner', string="Ofertante", required=True)
+    property_id = fields.Many2one(comodel_name='estate.property', string="Propiedad", required=True)
+    validity = fields.Integer(string="Validez (días)", default=7)
+    
+    # Solo se podra aceptar propiedades que no esten vendidas o canceladas
     status = fields.Selection(
         selection=[
             ('accepted', 'Aceptada'),
@@ -14,9 +19,8 @@ class EstatePropertyOffer(models.Model):
         ],
         string="Estado"
     )
-    partner_id = fields.Many2one(comodel_name='res.partner', string="Ofertante", required=True)
-    property_id = fields.Many2one(comodel_name='estate.property', string="Propiedad", required=True)
-    validity = fields.Integer(string="Validez (días)", default=7)
+    
+    # Fecha limite calculada a partir de la fecha de creacion + validez
     date_deadline = fields.Date(
         string="Fecha límite",
         compute="_compute_date_deadline",
@@ -31,14 +35,7 @@ class EstatePropertyOffer(models.Model):
         store=True
     )
 
-    @api.depends('create_date', 'validity')
-    def _compute_date_deadline(self):
-        for record in self:
-            if record.create_date:
-                record.date_deadline = record.create_date + timedelta(days=record.validity)
-            else:
-                record.date_deadline = False
-
+    # Inverso para actualizar la validez si se cambia la fecha límite
     def _inverse_date_deadline(self):
         for record in self:
             if record.date_deadline and record.create_date:
@@ -46,55 +43,56 @@ class EstatePropertyOffer(models.Model):
                 record.validity = delta.days
             else:
                 record.validity = 7
-                
-    @api.model
-    def create(self, vals):
-        """Sobrescribe create para rechazar automáticamente ofertas si la propiedad está vendida o cancelada."""
-        property_id = vals.get('property_id')
-        if property_id:
-            property_record = self.env['estate.property'].browse(property_id)
-            if property_record.state in ('sold', 'canceled'):
-                vals['status'] = 'refused'
-        return super(EstatePropertyOffer, self).create(vals)
 
+    # Marcar como rechazado si la propiedad está vendida o cancelada al actualizar la oferta
     def write(self, vals):
-        """Sobrescribe write para rechazar automáticamente ofertas si la propiedad está vendida o cancelada."""
         for offer in self:
-            # Usar el nuevo property_id si se está actualizando, o el existente
             property_id = vals.get('property_id', offer.property_id.id)
             property_record = self.env['estate.property'].browse(property_id)
             if property_record.state in ('sold', 'canceled'):
                 vals['status'] = 'refused'
         return super(EstatePropertyOffer, self).write(vals)
-                
+    
+    # Aceptar la oferta y marcar las otras como rechazadas
     def action_accept_offer(self):
-        """Acepta la oferta, actualiza la propiedad y rechaza otras ofertas."""
         for offer in self:
-            # Verificar que la propiedad no esté en estado 'sold' o 'canceled'
             if offer.property_id.state in ('sold', 'canceled'):
                 raise UserError("No se puede aceptar una oferta para una propiedad que está vendida o cancelada.")
-            # Rechazar otras ofertas de la misma propiedad
             other_offers = offer.property_id.offer_ids - offer
             other_offers.write({'status': 'refused'})
-            # Actualizar la oferta actual a 'accepted'
             offer.status = 'accepted'
-            # Actualizar la propiedad
             offer.property_id.write({
                 'state': 'offer_accepted',
                 'buyer_id': offer.partner_id,
                 'selling_price': offer.price
             })
                 
+    # Marcar como rechazado si la propiedad está vendida o cancelada al crear la oferta
+    @api.model
+    def create(self, vals):
+        property_id = vals.get('property_id')
+        if property_id:
+            property_record = self.env['estate.property'].browse(property_id)
+            if property_record.state in ('sold', 'canceled'):
+                vals['status'] = 'refused'
+        return super(EstatePropertyOffer, self).create(vals)            
+    
+    # Calcular la fecha límite según la fecha de creacion y la validez   
+    @api.depends('create_date', 'validity')
+    def _compute_date_deadline(self):
+        for record in self:
+            if record.create_date:
+                record.date_deadline = record.create_date + timedelta(days=record.validity)
+            else:
+                record.date_deadline = False
+    
+    # Verificar que la propiedad no haya sido vendida o cancelada al cambiar el estado de la oferta            
     @api.onchange('status')
     def _onchange_status(self):
-        """Actualiza el estado de la propiedad a 'offer_accepted' si la oferta es aceptada."""
         for offer in self:
             if offer.status == 'accepted':
-                # Verificar que la propiedad no esté en estado 'sold' o 'canceled'
                 if offer.property_id.state in ('sold', 'canceled'):
                     raise UserError("No se puede aceptar una oferta para una propiedad que está vendida o cancelada.")
-                # Rechazar otras ofertas de la misma propiedad
                 other_offers = offer.property_id.offer_ids - offer
                 other_offers.write({'status': 'refused'})
-                # Cambiar el estado de la propiedad a 'offer_accepted'
                 offer.property_id.state = 'offer_accepted'

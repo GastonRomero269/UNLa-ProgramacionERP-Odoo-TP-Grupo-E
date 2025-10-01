@@ -1,30 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="estate_property_view_search" model="ir.ui.view">
-        <field name="name">estate.property.view.search</field>
-        <field name="model">estate.property</field>
-        <field name="type">search</field>
-        <field name="arch" type="xml">
-            <search string="Propiedades">
-                <field name="name" string="Título"/>
-                <field name="postcode" string="Código Postal"/>
-                <field name="expected_price" string="Precio esperado"/>
-                <field name="bedrooms" string="Habitaciones"/>
-                <field name="living_area" string="Superficie cubierta"/>
-                <field name="facades" string="Fachadas"/>
-                <field name="state" string="Estado"/>
-                <filter string="Mis Propiedades" name="my_properties" domain="[('create_uid', '=', uid)]"/>
-                <filter string="Propiedades Disponibles" name="available_properties" domain="[('state', 'in', ('new', 'offer_received'))]"/>
-                <group string="Agrupar por">
-                    <filter string="Creado por" name="group_by_create_uid" context="{'group_by': 'create_uid'}"/>
-                    <filter string="Mes de Creación" name="group_by_create_date" context="{'group_by': 'create_date:month'}"/>
-                    <filter string="Código Postal" name="group_by_postcode" context="{'group_by': 'postcode'}"/>
-                    <filter string="Estado" name="group_by_state" context="{'group_by': 'state'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
+    <!-- Formulario de vista de propiedades -->
     <record id="estate_property_view_tree_custom" model="ir.ui.view">
         <field name="name">estate.property.view.tree.custom</field>
         <field name="model">estate.property</field>
@@ -43,6 +19,7 @@
         </field>
     </record>
 
+    <!-- Formulario de creacion de propiedades -->
     <record id="estate_property_view_form_custom" model="ir.ui.view">
         <field name="name">estate.property.view.form.custom</field>
         <field name="model">estate.property</field>
@@ -112,6 +89,33 @@
         </field>
     </record>
 
+    <!-- Formulario de busqueda de propiedades -->
+    <record id="estate_property_view_search" model="ir.ui.view">
+        <field name="name">estate.property.view.search</field>
+        <field name="model">estate.property</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Propiedades">
+                <field name="name" string="Título"/>
+                <field name="postcode" string="Código Postal"/>
+                <field name="expected_price" string="Precio esperado"/>
+                <field name="bedrooms" string="Habitaciones"/>
+                <field name="living_area" string="Superficie cubierta"/>
+                <field name="facades" string="Fachadas"/>
+                <field name="state" string="Estado"/>
+                <filter string="Mis Propiedades" name="my_properties" domain="[('create_uid', '=', uid)]"/>
+                <filter string="Propiedades Disponibles" name="available_properties" domain="[('state', 'in', ('new', 'offer_received'))]"/>
+                <group string="Agrupar por">
+                    <filter string="Creado por" name="group_by_create_uid" context="{'group_by': 'create_uid'}"/>
+                    <filter string="Mes de Creación" name="group_by_create_date" context="{'group_by': 'create_date:month'}"/>
+                    <filter string="Código Postal" name="group_by_postcode" context="{'group_by': 'postcode'}"/>
+                    <filter string="Estado" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Formulario de accion de propiedades -->
     <record id="estate_property_action" model="ir.actions.act_window">
         <field name="name">Propiedades</field>
         <field name="res_model">estate.property</field>

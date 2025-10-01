@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
+    <!-- Menu principal de inmobiliaria -->
     <menuitem id="menu_estate_root" name="Inmobiliaria" groups="real_estate.group_property_manager,real_estate.group_property_seller">
         
+        <!-- Sub menu de propiedades -->
         <menuitem id="menu_estate_advertiserments" name="Anuncios">
             <menuitem id="menu_estate_property" name="Propiedades" action="estate_property_action"/>
         </menuitem>
 
+        <!-- Sub menu de atributos de propiedades -->
         <menuitem id="menu_estate_settings" name="Ajustes" groups="real_estate.group_property_manager,real_estate.group_property_seller">
             <menuitem id="menu_estate_property_type_action" name="Tipos de propiedad" action="estate_property_type_action"/>
             <menuitem id="menu_estate_property_tag_action" name="Etiquetas de propiedad" action="estate_property_tag_action"/>
