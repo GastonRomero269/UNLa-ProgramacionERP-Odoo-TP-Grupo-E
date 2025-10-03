@@ -105,22 +105,22 @@ class EstateProperty(models.Model):
                 raise UserError("No se puede marcar como vendida una propiedad que ha sido cancelada.")
             record.state = 'sold'
     
-    # Calcular la mejor oferta
+    # Calcula la mejor oferta
     @api.depends('offer_ids.price')
     def _compute_best_offer(self):
         for record in self:
             prices = record.offer_ids.mapped('price')
             record.best_offer = max(prices) if prices else 0.0
 
-    # Calcular la superficie total, suma de cubierta y jardín
+    # Calcula la superficie total, suma de cubierta y jardín
     @api.depends('living_area', 'garden_area')
     def _compute_total_area(self):
         for record in self:
-            living_area = record.living_area or 0
             garden_area = record.garden_area or 0
+            living_area = record.living_area or 0
             record.total_area = living_area + garden_area        
     
-    # Limitar el área del jardín a 0 si no hay jardín y a 10 si hay jardín
+    # Limita el área del jardín a 0 si no hay jardín y a 10 si hay jardín
     @api.onchange('garden')
     def _onchange_garden(self):
         if self.garden:
@@ -128,18 +128,18 @@ class EstateProperty(models.Model):
         else:
             self.garden_area = 0
     
-    # Advertencia si el precio esperado es menor a 10,000
+    # Si el precio esperado es menor a 10.000 da una advertencia
     @api.onchange('expected_price')
     def _onchange_expected_price(self):
         if self.expected_price and self.expected_price < 10000:
             return {
                 'warning': {
-                    'title': 'Precio Bajo',
-                    'message': 'El precio esperado ingresado es menor a 10,000. Verifique si es correcto o si se trata de un error de tipeo.'
+                    'title': 'Precio por debajo del minimo',
+                    'message': 'El precio esperado ingresado es menor a 10,000 $. Verifique si ingresó la cifra correcta o si se trata de un error de tipeo.'
                 }
             }
             
-    # Cambiar el estado a 'oferta recibida' si hay ofertas y la propiedad no está vendida o cancelada
+    # Si hay ofertas y la propiedad no está vendida o cancelada, el estado cambia a 'oferta recibida'
     @api.onchange('offer_ids')
     def _onchange_offer_ids(self):
         if self.offer_ids and self.state not in ('sold', 'canceled'):
@@ -147,9 +147,9 @@ class EstateProperty(models.Model):
         accepted_offers = self.offer_ids.filtered(lambda o: o.status == 'accepted')
         if accepted_offers:
             if len(accepted_offers) > 1:
-                raise UserError("Solo una oferta puede ser aceptada. Revisa las ofertas.")
+                raise UserError("Solo se puede aceptar una oferta. Revisa las ofertas.")
             self.state = 'offer_accepted'
-            self.buyer_id = accepted_offers.partner_id
             self.selling_price = accepted_offers.price
+            self.buyer_id = accepted_offers.partner_id
             other_offers = self.offer_ids - accepted_offers
             other_offers.write({'status': 'refused'})

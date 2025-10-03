@@ -67,7 +67,16 @@ class EstatePropertyOffer(models.Model):
                 'selling_price': offer.price
             })
                 
-    # Marcar como rechazado si la propiedad está vendida o cancelada al crear la oferta
+    # Segun la fecha de creacion y su validez se calcula la fecha límite
+    @api.depends('create_date', 'validity')
+    def _compute_date_deadline(self):
+        for record in self:
+            if record.create_date:
+                record.date_deadline = record.create_date + timedelta(days=record.validity)
+            else:
+                record.date_deadline = False
+
+    # Se marca como rechazado si la propiedad está vendida o cancelada al crear la oferta
     @api.model
     def create(self, vals):
         property_id = vals.get('property_id')
@@ -77,16 +86,8 @@ class EstatePropertyOffer(models.Model):
                 vals['status'] = 'refused'
         return super(EstatePropertyOffer, self).create(vals)            
     
-    # Calcular la fecha límite según la fecha de creacion y la validez   
-    @api.depends('create_date', 'validity')
-    def _compute_date_deadline(self):
-        for record in self:
-            if record.create_date:
-                record.date_deadline = record.create_date + timedelta(days=record.validity)
-            else:
-                record.date_deadline = False
     
-    # Verificar que la propiedad no haya sido vendida o cancelada al cambiar el estado de la oferta            
+    # Se verifica que la propiedad no haya sido vendida o cancelada al cambiar el estado de la oferta         
     @api.onchange('status')
     def _onchange_status(self):
         for offer in self:
