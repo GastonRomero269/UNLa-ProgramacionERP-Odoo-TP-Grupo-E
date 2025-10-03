@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Formulario de vista de tipos de propiedades -->
     <record id="estate_property_type_view_list" model="ir.ui.view">
         <field name="name">estate.property.type.view.list</field>
         <field name="model">estate.property.type</field>
@@ -11,6 +12,7 @@
         </field>
     </record>
 
+    <!-- Formulario de creacion de tipos de propiedades -->
     <record id="estate_property_type_view_form" model="ir.ui.view">
         <field name="name">estate.property.type.view.form</field>
         <field name="model">estate.property.type</field>
@@ -26,17 +28,7 @@
         </field>
     </record>
 
-    <record id="estate_property_type_view_list" model="ir.ui.view">
-        <field name="name">estate.property.type.view.list</field>
-        <field name="model">estate.property.type</field>
-        <field name="type">list</field>
-        <field name="arch" type="xml">
-            <list string="Tipos de Propiedad" editable="top">
-                <field name="name" string="Nombre"/>
-            </list>
-        </field>
-    </record>
-
+    <!-- Formulario de accion de tipos de propiedades -->
     <record id="estate_property_type_action" model="ir.actions.act_window">
         <field name="name">Tipos de propiedad</field>
         <field name="res_model">estate.property.type</field>
